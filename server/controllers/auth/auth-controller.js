@@ -188,7 +188,6 @@ const getMe = async(req, res) => {
     }
 };
 
-<<<<<<< HEAD
 module.exports = {
     registerUser,
     loginUser,
@@ -197,7 +196,7 @@ module.exports = {
     adminMiddleware,
     getMe
 };
-=======
+
 //         if (!authHeader || !authHeader.startsWith("Bearer ")) {
 //             return res.status(401).json({ message: "No token provided" });
 //         }
