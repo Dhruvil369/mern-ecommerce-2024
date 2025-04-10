@@ -24,7 +24,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // update with frontend domain in production
+        origin: "*", // update with frontend domain in production
         methods: ["GET", "POST"],
     },
 });
