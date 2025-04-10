@@ -219,4 +219,4 @@ module.exports = {
 // }
 
 module.exports = { registerUser, loginUser, logoutUser, authMiddleware, adminMiddleware };
->>>>>>> 2e822e724d5ab55122a7e678dce1e5a133d4387b
+
