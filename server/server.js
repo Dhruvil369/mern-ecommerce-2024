@@ -61,7 +61,7 @@ mongoose
 // ✅ Middleware Setup
 app.use(
     cors({
-        origin: "*",
+        origin: " https://237f-103-112-218-182.ngrok-free.app",
         methods: ["GET", "POST", "DELETE", "PUT"],
         credentials: true,
     })
