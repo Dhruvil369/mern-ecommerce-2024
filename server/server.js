@@ -24,7 +24,7 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // update with frontend domain in production
+        origin: "*", // update with frontend domain in production
         methods: ["GET", "POST"],
     },
 });
@@ -61,7 +61,7 @@ mongoose
 // ✅ Middleware Setup
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: "https://237f-103-112-218-182.ngrok-free.app",
         methods: ["GET", "POST", "DELETE", "PUT"],
         credentials: true,
     })
