@@ -6,6 +6,7 @@ const initialState = {
     productList: [],
 };
 
+// ✅ Add New Product
 export const addNewProduct = createAsyncThunk(
     "/products/addnewproduct",
     async(formData) => {
@@ -15,6 +16,7 @@ export const addNewProduct = createAsyncThunk(
                 headers: {
                     "Content-Type": "application/json",
                 },
+                withCredentials: true, // ⬅️ Send cookies for auth
             }
         );
 
@@ -22,17 +24,21 @@ export const addNewProduct = createAsyncThunk(
     }
 );
 
+// ✅ Fetch All Products
 export const fetchAllProducts = createAsyncThunk(
     "/products/fetchAllProducts",
     async() => {
         const result = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/admin/products/get`
+            `${import.meta.env.VITE_BASE_URL}/api/admin/products/get`, {
+                withCredentials: true, // ⬅️ Send cookies for auth
+            }
         );
 
         return result.data;
     }
 );
 
+// ✅ Edit Product
 export const editProduct = createAsyncThunk(
     "/products/editProduct",
     async({ id, formData }) => {
@@ -42,6 +48,7 @@ export const editProduct = createAsyncThunk(
                 headers: {
                     "Content-Type": "application/json",
                 },
+                withCredentials: true, // ⬅️ Send cookies for auth
             }
         );
 
@@ -49,17 +56,21 @@ export const editProduct = createAsyncThunk(
     }
 );
 
+// ✅ Delete Product
 export const deleteProduct = createAsyncThunk(
     "/products/deleteProduct",
     async(id) => {
         const result = await axios.delete(
-            `${import.meta.env.VITE_BASE_URL}/api/admin/products/delete/${id}`
+            `${import.meta.env.VITE_BASE_URL}/api/admin/products/delete/${id}`, {
+                withCredentials: true, // ⬅️ Send cookies for auth
+            }
         );
 
         return result.data;
     }
 );
 
+// ✅ Admin Product Slice
 const AdminProductsSlice = createSlice({
     name: "adminProducts",
     initialState,
@@ -73,7 +84,7 @@ const AdminProductsSlice = createSlice({
                 state.isLoading = false;
                 state.productList = action.payload.data;
             })
-            .addCase(fetchAllProducts.rejected, (state, action) => {
+            .addCase(fetchAllProducts.rejected, (state) => {
                 state.isLoading = false;
                 state.productList = [];
             });
