@@ -19,7 +19,7 @@ export const getUnassignedOrders = createAsyncThunk(
         console.log(header);
         console.log("This is token in token getUnassignedOrders", token);
         try {
-            const response = await axios.get("http://localhost:5000/api/admin/orders/unassigned", {
+            const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/unassigned`, {
                 withCredentials: true
             });
             console.log("✅ DATA from /unassigned-orders:", response.data); // Is this [] or real?
@@ -44,7 +44,7 @@ export const acceptOrder = createAsyncThunk(
         console.log("acCEOPToRDER tRIGGERED");
         const token = localStorage.getItem("token");
         const res = await axios.put(
-            `http://localhost:5000/api/admin/orders/accept/${id}`, {}, // <- PUT request body (empty in this case)
+            `${import.meta.env.VITE_BASE_URL}/api/admin/orders/accept/${id}`, {}, // <- PUT request body (empty in this case)
             {
                 headers: {
                     Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ export const getAcceptedOrdersByAdmin = createAsyncThunk(
     "/order/getAcceptedOrdersByAdmin",
     async() => {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:5000/api/admin/orders/accepted`, {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/accepted`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -87,7 +87,7 @@ export const markOrderAsDelivered = createAsyncThunk(
     "/order/markOrderAsDelivered",
     async(orderId) => {
         const token = localStorage.getItem("token");
-        const res = await axios.put(`http://localhost:5000/api/admin/orders/delivered/${orderId}`, {}, {
+        const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/delivered/${orderId}`, {}, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -102,7 +102,7 @@ export const getAllOrdersForAdmin = createAsyncThunk(
     "/order/getAllOrdersForAdmin",
     async() => {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:5000/api/admin/orders/get`, {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/get`, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -116,7 +116,7 @@ export const getOrderDetailsForAdmin = createAsyncThunk(
     "/order/getOrderDetailsForAdmin",
     async(id) => {
         const token = localStorage.getItem("token");
-        const res = await axios.get(`http://localhost:5000/api/admin/orders/details/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/details/${id}`, {
             withCredentials: true
         });
         return res.data;
@@ -128,7 +128,7 @@ export const updateOrderStatus = createAsyncThunk(
     "/order/updateOrderStatus",
     async({ orderId, status }) => {
         const token = localStorage.getItem("token");
-        const res = await axios.put(`http://localhost:5000/api/admin/orders/update/${orderId}`, { status }, {
+        const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/admin/orders/update/${orderId}`, { status }, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
