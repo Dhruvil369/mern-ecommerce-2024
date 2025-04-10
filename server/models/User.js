@@ -23,7 +23,6 @@ const UserSchema = new mongoose.Schema({
         type: String, // 👈 Add this field
         default: null,
     },
-
 });
 
 const User = mongoose.model("User", UserSchema);
