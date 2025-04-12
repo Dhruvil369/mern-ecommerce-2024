@@ -63,6 +63,7 @@ const loginUser = async(req, res) => {
             "CLIENT_SECRET_KEY", // change to process.env.JWT_SECRET in production
             { expiresIn: "60m" }
         );
+        console.log("token set in DB from login Event",token);
 
         // Store token in DB
         checkUser.token = token;
