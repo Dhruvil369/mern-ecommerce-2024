@@ -108,8 +108,8 @@ export const shoppingViewHeaderMenuItems = [{
         path: "/shop/listing",
     },
     {
-        id: "products",
-        label: "Uplode Precription",
+        id: "prescription",
+        label: "Upload Prescription",
         path: "/shop/uplode",
     },
     {

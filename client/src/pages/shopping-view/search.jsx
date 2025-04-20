@@ -85,14 +85,14 @@ function SearchProducts() {
   }, [productDetails]);
 
   return (
-    <div className="container mx-auto md:px-6 px-4 py-8">
-      <div className="flex justify-center mb-8">
-        <div className="w-full flex items-center">
+    <div className="container mx-auto px-3 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8">
+      <div className="flex justify-center mb-4 sm:mb-6 md:mb-8">
+        <div className="w-full max-w-3xl flex items-center">
           <Input
             value={keyword}
             name="keyword"
             onChange={(event) => setKeyword(event.target.value)}
-            className="py-6"
+            className="py-4 sm:py-6 text-sm sm:text-base"
             placeholder="Search Products..."
           />
         </div>
@@ -100,16 +100,16 @@ function SearchProducts() {
 
       {/* If there are no search results and no keyword, show a message */}
       {!keyword && !isLoading && productList.length === 0 && (
-        <h1 className="text-5xl font-extrabold">No products available!</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center">No products available!</h1>
       )}
 
       {/* If no results are found based on the search query */}
-      {!keyword && searchResults.length === 1 ? (
-        <h1 className="text-5xl font-extrabold">No result found!</h1>
+      {keyword && searchResults.length === 0 ? (
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold text-center">No results found!</h1>
       ) : null}
 
       {/* Show products either from search or all products */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-5">
         {keyword && searchResults.length > 0
           ? searchResults.map((item) => (
               <ShoppingProductTile

@@ -2,66 +2,70 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
-    approvalURL: null,
     isLoading: false,
     orderId: null,
+    razorpayOrderId: null,
+    razorpayAmount: null,
+    razorpayCurrency: null,
+    razorpayKeyId: null,
     orderList: [],
     orderDetails: null,
-    acceptedOrders: [],
 };
 
-// ✅ Create Order
 export const createNewOrder = createAsyncThunk(
     "/order/createNewOrder",
     async(orderData) => {
         const response = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/api/shop/order/create`,
-            orderData, { withCredentials: true } // ⬅️ Important
+            "http://localhost:5000/api/shop/order/create",
+            orderData
         );
+
         return response.data;
     }
 );
 
-// ✅ Capture Payment
 export const capturePayment = createAsyncThunk(
     "/order/capturePayment",
-    async({ paymentId, payerId, orderId }) => {
+    async({ razorpay_order_id, razorpay_payment_id, razorpay_signature, orderId }) => {
         const response = await axios.post(
-            `${import.meta.env.VITE_BASE_URL}/api/shop/order/capture`, { paymentId, payerId, orderId }, { withCredentials: true }
+            "http://localhost:5000/api/shop/order/capture", {
+                razorpay_order_id,
+                razorpay_payment_id,
+                razorpay_signature,
+                orderId,
+            }
         );
+
         return response.data;
     }
 );
 
-// ✅ User: Get All Orders
 export const getAllOrdersByUserId = createAsyncThunk(
     "/order/getAllOrdersByUserId",
     async(userId) => {
         const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/shop/order/list/${userId}`, { withCredentials: true }
+            `http://localhost:5000/api/shop/order/list/${userId}`
         );
+
         return response.data;
     }
 );
 
-// ✅ User/Admin: Get Order Details
 export const getOrderDetails = createAsyncThunk(
     "/order/getOrderDetails",
     async(id) => {
         const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/shop/order/details/${id}`, { withCredentials: true }
+            `http://localhost:5000/api/shop/order/details/${id}`
         );
+
         return response.data;
     }
 );
 
-// ✅ Admin: Get Accepted Orders
 export const getAcceptedOrdersByAdmin = createAsyncThunk(
     "order/getAcceptedOrdersByAdmin",
     async(adminId) => {
-        const response = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/api/order/accepted-orders?adminId=${adminId}`, { withCredentials: true }
-        );
+        const response = await axios.get(`/api/order/accepted-orders?adminId=${adminId}`);
         return response.data.data;
     }
 );
@@ -76,15 +80,16 @@ const shoppingOrderSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-        // ➤ Create Order
             .addCase(createNewOrder.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(createNewOrder.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.approvalURL = action.payload.approvalURL;
                 state.orderId = action.payload.orderId;
-
+                state.razorpayOrderId = action.payload.razorpayOrderId;
+                state.razorpayAmount = action.payload.amount;
+                state.razorpayCurrency = action.payload.currency;
+                state.razorpayKeyId = action.payload.razorpayKeyId;
                 sessionStorage.setItem(
                     "currentOrderId",
                     JSON.stringify(action.payload.orderId)
@@ -92,12 +97,13 @@ const shoppingOrderSlice = createSlice({
             })
             .addCase(createNewOrder.rejected, (state) => {
                 state.isLoading = false;
-                state.approvalURL = null;
                 state.orderId = null;
+                state.razorpayOrderId = null;
+                state.razorpayAmount = null;
+                state.razorpayCurrency = null;
+                state.razorpayKeyId = null;
             })
-
-        // ➤ Get All Orders
-        .addCase(getAllOrdersByUserId.pending, (state) => {
+            .addCase(getAllOrdersByUserId.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getAllOrdersByUserId.fulfilled, (state, action) => {
@@ -108,24 +114,20 @@ const shoppingOrderSlice = createSlice({
                 state.isLoading = false;
                 state.orderList = [];
             })
-
-        // ➤ Get Order Details
-        .addCase(getOrderDetails.pending, (state) => {
+            .addCase(getOrderDetails.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getOrderDetails.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.orderDetails = action.payload.data;
             })
+            .addCase(getAcceptedOrdersByAdmin.fulfilled, (state, action) => {
+                state.acceptedOrders = action.payload;
+            })
             .addCase(getOrderDetails.rejected, (state) => {
                 state.isLoading = false;
                 state.orderDetails = null;
-            })
-
-        // ➤ Get Accepted Orders (Admin)
-        .addCase(getAcceptedOrdersByAdmin.fulfilled, (state, action) => {
-            state.acceptedOrders = action.payload;
-        });
+            });
     },
 });
 

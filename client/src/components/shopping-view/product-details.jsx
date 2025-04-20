@@ -106,7 +106,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
 
   return (
     <Dialog open={open} onOpenChange={handleDialogClose}>
-      <DialogContent className="grid grid-cols-2 gap-8 sm:p-12 max-w-[90vw] sm:max-w-[80vw] lg:max-w-[70vw]">
+      <DialogContent className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 p-4 sm:p-6 md:p-8 lg:p-12 max-w-[95vw] sm:max-w-[90vw] md:max-w-[85vw] lg:max-w-[75vw]">
         <div className="relative overflow-hidden rounded-lg">
           <img
             src={productDetails?.image}
@@ -116,23 +116,23 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             className="aspect-square w-full object-cover"
           />
         </div>
-        <div className="">
+        <div className="mt-4 md:mt-0">
           <div>
-            <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1>
-            <p className="text-muted-foreground text-2xl mb-5 mt-4">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold">{productDetails?.title}</h1>
+            <p className="text-muted-foreground text-sm sm:text-base md:text-lg lg:text-xl mb-3 md:mb-5 mt-2 md:mt-4">
               {productDetails?.description}
             </p>
           </div>
           <div className="flex items-center justify-between">
             <p
-              className={`text-3xl font-bold text-primary ${
+              className={`text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-primary ${
                 productDetails?.salePrice > 0 ? "line-through" : ""
               }`}
             >
               ₹{productDetails?.price}
             </p>
             {productDetails?.salePrice > 0 ? (
-              <p className="text-2xl font-bold text-muted-foreground">
+              <p className="text-lg sm:text-xl md:text-2xl font-bold text-muted-foreground">
                 ₹{productDetails?.salePrice}
               </p>
             ) : null}
@@ -165,18 +165,18 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             )}
           </div>
           <Separator />
-          <div className="max-h-[300px] overflow-auto">
-            <h2 className="text-xl font-bold mb-4">Reviews</h2>
-            <div className="grid gap-6">
+          <div className="max-h-[200px] md:max-h-[300px] overflow-auto">
+            <h2 className="text-lg md:text-xl font-bold mb-2 md:mb-4">Reviews</h2>
+            <div className="grid gap-3 md:gap-6">
               {reviews && reviews.length > 0 ? (
                 reviews.map((reviewItem) => (
-                  <div className="flex gap-4">
-                    <Avatar className="w-10 h-10 border">
+                  <div className="flex gap-2 md:gap-4">
+                    <Avatar className="w-8 h-8 md:w-10 md:h-10 border">
                       <AvatarFallback>
                         {reviewItem?.userName[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
-                    <div className="grid gap-1">
+                    <div className="grid gap-0.5 md:gap-1">
                       <div className="flex items-center gap-2">
                         <h3 className="font-bold">{reviewItem?.userName}</h3>
                       </div>
@@ -193,7 +193,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 <h1>No Reviews</h1>
               )}
             </div>
-            <div className="mt-10 flex-col flex gap-2">
+            <div className="mt-6 md:mt-10 flex-col flex gap-2">
               <Label>Write a review</Label>
               <div className="flex gap-1">
                 <StarRatingComponent
@@ -206,10 +206,12 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 value={reviewMsg}
                 onChange={(event) => setReviewMsg(event.target.value)}
                 placeholder="Write a review..."
+                className="text-sm md:text-base"
               />
               <Button
                 onClick={handleAddReview}
                 disabled={reviewMsg.trim() === ""}
+                className="text-sm md:text-base"
               >
                 Submit
               </Button>

@@ -72,51 +72,48 @@ function UserCartItemsContent({ cartItem }) {
     cartItem?.salePrice > 0 ? cartItem?.salePrice : cartItem?.price;
 
   return (
-    <div className="flex items-center space-x-4">
+    <div className="flex items-center space-x-2 sm:space-x-4 mb-3 sm:mb-4 pb-3 sm:pb-4 border-b last:border-b-0 last:mb-0 last:pb-0">
       <img
         src={cartItem?.image}
         alt={cartItem?.title}
-        className="w-20 h-20 rounded object-cover"
+        className="w-16 h-16 sm:w-20 sm:h-20 rounded object-cover"
       />
-      <div className="flex-1">
-        <h3 className="font-extrabold">{cartItem?.title}</h3>
-        <div className="flex items-center gap-2 mt-1">
+      <div className="flex-1 min-w-0"> {/* min-width prevents flex item from shrinking below content size */}
+        <h3 className="font-extrabold text-sm sm:text-base truncate">{cartItem?.title}</h3>
+        <div className="flex items-center gap-1 sm:gap-2 mt-1">
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0"
             size="icon"
             disabled={cartItem?.quantity === 1}
             onClick={() => handleUpdateQuantity(cartItem, "minus")}
           >
-            <Minus className="w-4 h-4" />
+            <Minus className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="sr-only">Decrease</span>
           </Button>
-          <span className="font-semibold">{cartItem?.quantity}</span>
+          <span className="font-semibold text-sm sm:text-base">{cartItem?.quantity}</span>
           <Button
             variant="outline"
-            className="h-8 w-8 rounded-full"
+            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full p-0"
             size="icon"
             onClick={() => handleUpdateQuantity(cartItem, "plus")}
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-3 h-3 sm:w-4 sm:h-4" />
             <span className="sr-only">Increase</span>
           </Button>
         </div>
       </div>
-      <div className="flex flex-col items-end">
-        <p className="font-semibold">
+      <div className="flex flex-col items-end ml-1 sm:ml-2">
+        <p className="font-semibold text-sm sm:text-base">
           ₹{(unitPrice * cartItem?.quantity).toFixed(2)}
         </p>
-        {/* Optional: Show unit price breakdown */}
-        {/* 
-        <span className="text-xs text-muted-foreground">
-          ₹{unitPrice.toFixed(2)} × {cartItem.quantity}
-        </span> 
-        */}
+        <span className="text-xs text-muted-foreground hidden sm:inline-block">
+          ₹{unitPrice.toFixed(2)} × {cartItem?.quantity}
+        </span>
         <Trash
           onClick={() => handleCartItemDelete(cartItem)}
           className="cursor-pointer mt-1"
-          size={20}
+          size={16}
         />
       </div>
     </div>

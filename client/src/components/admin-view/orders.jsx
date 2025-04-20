@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
@@ -29,7 +29,7 @@ import { Button } from "../ui/button";
 import AdminOrderDetailsView from "./order-details";
 
 // Initialize socket
-const socket = io(`${import.meta.env.VITE_BASE_URL}`, {
+const socket = io("http://localhost:5000", {
   auth: {
     token: localStorage.getItem("token"), // or however you're storing it
   },
@@ -47,7 +47,7 @@ function AdminOrdersView() {
   // const currentAdminId = useSelector((state) => state.auth.user._id);
 
   // 🔍 Add logs here
-  
+
   // Fetch orders initially
   useEffect(() => {
     dispatch(getUnassignedOrders());
@@ -89,7 +89,7 @@ function AdminOrdersView() {
       dispatch(getUnassignedOrders());
       dispatch(getAcceptedOrdersByAdmin());
     });
-    
+
     return () => {
       socket.off("admin_new_order", handleNewOrder);
       socket.off("order_accepted");
@@ -118,7 +118,7 @@ function AdminOrdersView() {
       toast.error("Failed to load order details");
     }
   };
-  
+
 
   const closeDialog = () => {
     setOpenDetailsDialog(false);
@@ -128,32 +128,38 @@ function AdminOrdersView() {
   return (
     <div className="flex flex-col gap-6">
       {/* Unassigned Orders */}
-      <Card>
-        <CardHeader>
-          <CardTitle>🟡 Unassigned Orders</CardTitle>
+      <Card className="overflow-hidden">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">🟡 Unassigned Orders</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
+        <CardContent className="p-0 sm:p-6 pt-0">
+          <div className="responsive-table">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Date</TableHead>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Total</TableHead>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
             <TableBody>
               {unassignedOrders.length > 0 ? (
                 [...unassignedOrders].reverse().map((order) => (
                   <TableRow key={order._id}>
-                    <TableCell>{order.orderDate.split("T")[0]}</TableCell>
-                    <TableCell>₹{order.totalAmount}</TableCell>
-                    <TableCell className="flex gap-2">
-                      <Button onClick={() => handleViewDetails(order._id)}>
+                    <TableCell className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">{order.orderDate.split("T")[0]}</TableCell>
+                    <TableCell className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">₹{order.totalAmount}</TableCell>
+                    <TableCell className="admin-orders-actions">
+                      <Button
+                        onClick={() => handleViewDetails(order._id)}
+                        size="sm"
+                        className="admin-orders-button"
+                      >
                         View
                       </Button>
                       <Button
                         onClick={() => handleAccept(order._id)}
-                        className="bg-green-600 text-white"
+                        size="sm"
+                        className="bg-green-600 text-white admin-orders-button"
                       >
                         Accept
                       </Button>
@@ -169,36 +175,38 @@ function AdminOrdersView() {
               )}
             </TableBody>
           </Table>
+        </div>
         </CardContent>
       </Card>
 
       {/* Accepted Orders */}
-      <Card>
-        <CardHeader>
-          <CardTitle>🟢 Accepted Orders (You)</CardTitle>
+      <Card className="overflow-hidden">
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="text-base sm:text-lg md:text-xl">🟢 Accepted Orders (You)</CardTitle>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Total</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-
-              </TableRow>
-            </TableHeader>
+        <CardContent className="p-0 sm:p-6 pt-0">
+          <div className="responsive-table">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Date</TableHead>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Total</TableHead>
+                  <TableHead className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">Status</TableHead>
+                </TableRow>
+              </TableHeader>
             <TableBody>
               {acceptedOrders.length > 0 ? (
                 [...acceptedOrders].reverse().map((order) => (
                   <TableRow key={order._id}>
-                  <TableCell>{order.orderDate.split("T")[0]}</TableCell>
-                  <TableCell>₹{order.totalAmount}</TableCell>
-                  <TableCell className="flex items-center gap-2">
-                    <span>{order.orderStatus}</span>
-                    <Button onClick={() => handleViewDetails(order._id)} size="sm">
+                  <TableCell className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">{order.orderDate.split("T")[0]}</TableCell>
+                  <TableCell className="whitespace-nowrap text-xs sm:text-sm px-2 sm:px-4">₹{order.totalAmount}</TableCell>
+                  <TableCell className="admin-orders-actions items-start xs:items-center">
+                    <span className="text-xs sm:text-sm">{order.orderStatus}</span>
+                    <Button
+                      onClick={() => handleViewDetails(order._id)}
+                      size="sm"
+                      className="admin-orders-button"
+                    >
                       View
                     </Button>
                   </TableCell>
@@ -214,20 +222,21 @@ function AdminOrdersView() {
               )}
             </TableBody>
           </Table>
+        </div>
         </CardContent>
       </Card>
 
       {/* Shared Dialog */}
       <Dialog open={openDetailsDialog} onOpenChange={closeDialog}>
-  <DialogContent
-    className="max-w-3xl w-full p-0 overflow-hidden"
-    style={{ maxHeight: "90vh" }} // Limit height of the entire modal
-  >
-    <div className="overflow-y-auto max-h-[90vh] p-6">
-      <AdminOrderDetailsView orderDetails={orderDetails} />
-    </div>
-  </DialogContent>
-</Dialog>
+        <DialogContent
+          className="max-w-[95vw] xs:max-w-[90vw] sm:max-w-[80vw] md:max-w-3xl w-full p-0 overflow-hidden"
+          style={{ maxHeight: "90vh" }} // Limit height of the entire modal
+        >
+          <div className="overflow-y-auto max-h-[80vh] p-0">
+            <AdminOrderDetailsView orderDetails={orderDetails} />
+          </div>
+        </DialogContent>
+      </Dialog>
 
 
     </div>

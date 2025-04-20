@@ -7,6 +7,7 @@ import AdminDashboard from "./pages/admin-view/dashboard";
 import AdminProducts from "./pages/admin-view/products";
 import AdminOrders from "./pages/admin-view/orders";
 import AdminFeatures from "./pages/admin-view/features";
+import AdminPrescriptions from "./pages/admin-view/prescriptions";
 import ShoppingLayout from "./components/shopping-view/layout";
 import NotFound from "./pages/not-found";
 import ShoppingHome from "./pages/shopping-view/home";
@@ -14,12 +15,12 @@ import ShoppingListing from "./pages/shopping-view/listing";
 import ShoppingCheckout from "./pages/shopping-view/checkout";
 import ShoppingAccount from "./pages/shopping-view/account";
 import CheckAuth from "./components/common/check-auth";
-import UnauthPage from "./pages/unauth-page"; 
+import UnauthPage from "./pages/unauth-page";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { checkAuth } from "./store/auth-slice";
 import { Skeleton } from "@/components/ui/skeleton";
-import PaypalReturnPage from "./pages/shopping-view/paypal-return";
+import RazorpaySuccessPage from "./pages/shopping-view/razorpay-success";
 import PaymentSuccessPage from "./pages/shopping-view/payment-success";
 import SearchProducts from "./pages/shopping-view/search";
 import UplodePrecription from "./pages/shopping-view/UplodePrecription";
@@ -40,9 +41,8 @@ function App() {
   console.log(isLoading, user);
 
   return (
-    
-    <div className="handleDeleteFeatureImage(featureImgItem.id);
-flex flex-col overflow-hidden bg-white">
+
+    <div className="flex flex-col overflow-hidden bg-white">
      <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route
@@ -56,14 +56,14 @@ flex flex-col overflow-hidden bg-white">
         />
 
         <Route
-          path="/auth" 
+          path="/auth"
           element={<CheckAuth isAuthenticated={isAuthenticated} user={user}>
               <AuthLayout />
             </CheckAuth>}>
           <Route path="login" element={<AuthLogin />} />
           <Route path="register" element={<AuthRegister />} />
         </Route>
-        
+
         <Route
           path="/admin"
           element={
@@ -76,6 +76,7 @@ flex flex-col overflow-hidden bg-white">
           <Route path="products" element={<AdminProducts />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="features" element={<AdminFeatures />} />
+          <Route path="prescriptions" element={<AdminPrescriptions />} />
         </Route>
         <Route
           path="/shop"
@@ -91,7 +92,7 @@ flex flex-col overflow-hidden bg-white">
           <Route path="listing" element={<ShoppingListing />} />
           <Route path="checkout" element={<ShoppingCheckout />} />
           <Route path="account" element={<ShoppingAccount />} />
-          <Route path="paypal-return" element={<PaypalReturnPage />} />
+          <Route path="razorpay-success" element={<RazorpaySuccessPage />} />
           <Route path="payment-success" element={<PaymentSuccessPage />} />
           <Route path="search" element={<SearchProducts />} />
         </Route>

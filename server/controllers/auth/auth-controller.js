@@ -1,8 +1,8 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../../models/User");
-
-// Register
+const Admin = require("../../models/User")
+    //register
 const registerUser = async(req, res) => {
     const { userName, email, password } = req.body;
 
@@ -11,7 +11,7 @@ const registerUser = async(req, res) => {
         if (checkUser)
             return res.json({
                 success: false,
-                message: "User already exists with the same email! Please try again",
+                message: "User Already exists with the same email! Please try again",
             });
 
         const hashPassword = await bcrypt.hash(password, 12);
@@ -27,15 +27,15 @@ const registerUser = async(req, res) => {
             message: "Registration successful",
         });
     } catch (e) {
-        console.error(e);
+        console.log(e);
         res.status(500).json({
             success: false,
-            message: "Some error occurred",
+            message: "Some error occured",
         });
     }
 };
 
-// Login
+//login
 const loginUser = async(req, res) => {
     const { email, password } = req.body;
 
@@ -44,10 +44,13 @@ const loginUser = async(req, res) => {
         if (!checkUser)
             return res.json({
                 success: false,
-                message: "User doesn't exist! Please register first",
+                message: "User doesn't exists! Please register first",
             });
 
-        const checkPasswordMatch = await bcrypt.compare(password, checkUser.password);
+        const checkPasswordMatch = await bcrypt.compare(
+            password,
+            checkUser.password
+        );
         if (!checkPasswordMatch)
             return res.json({
                 success: false,
@@ -60,16 +63,10 @@ const loginUser = async(req, res) => {
                 email: checkUser.email,
                 userName: checkUser.userName,
             },
-            "CLIENT_SECRET_KEY", // change to process.env.JWT_SECRET in production
-            { expiresIn: "60m" }
+            "CLIENT_SECRET_KEY", { expiresIn: "60m" }
         );
-        console.log("token set in DB from login Event",token);
-
-        // Store token in DB
-        checkUser.token = token;
-        await checkUser.save();
-
-        res.cookie("token", token, { httpOnly: true, secure: true ,sameSite: "None"}).json({
+        console.log("Tocken", token);
+        res.cookie("token", token, { httpOnly: true, secure: false }).json({
             success: true,
             message: "Logged in successfully",
             token,
@@ -81,122 +78,101 @@ const loginUser = async(req, res) => {
             },
         });
     } catch (e) {
-        console.error(e);
+        console.log(e);
         res.status(500).json({
             success: false,
-            message: "Some error occurred",
+            message: "Some error occured",
         });
     }
 };
 
-// Logout
-const logoutUser = async(req, res) => {
-    const token = req.cookies.token;
-
-    try {
-        const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-        await User.findByIdAndUpdate(decoded.id, { token: null }); // remove token from DB
-    } catch (err) {
-        console.log("Token already expired or invalid");
-    }
-
+//logout
+const logoutUser = (req, res) => {
     res.clearCookie("token").json({
         success: true,
         message: "Logged out successfully!",
     });
 };
 
-// Auth Middleware
+//auth middleware
 const authMiddleware = async(req, res, next) => {
     const token = req.cookies.token;
+    console.log("This is token in auth middleware", token);
     if (!token)
         return res.status(401).json({
             success: false,
-            message: "Unauthorized user!",
+            message: "Unauthorised user!",
         });
 
     try {
         const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-        const user = await User.findById(decoded.id);
-
-        if (!user || user.token !== token) {
-            return res.status(401).json({ success: false, message: "Invalid session!" });
-        }
-
+        console.log(decoded);
         req.user = decoded;
+        console.log("Auth middleware running properly");
         next();
     } catch (error) {
         res.status(401).json({
             success: false,
-            message: "Unauthorized user!",
+            message: "Unauthorised user!",
         });
     }
 };
 
-// Admin Middleware
 const adminMiddleware = async(req, res, next) => {
     const token = req.cookies.token;
+    console.log("This is token in auth middleware of admin ", token);
     if (!token)
         return res.status(401).json({
             success: false,
             message: "Token not found in middleware!",
         });
-
+    console.log("Admin Middleware Running till try");
     try {
         const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-        const admin = await User.findById(decoded.id);
-
-        if (!admin || admin.token !== token || admin.role !== "admin") {
-            return res.status(401).json({ success: false, message: "Unauthorized admin!" });
-        }
-
+        console.log(decoded);
         req.user = decoded;
+        console.log("Auth middleware running properly");
         next();
     } catch (error) {
         res.status(401).json({
             success: false,
-            message: "Unauthorized admin!",
+            message: "Unauthorised user!",
         });
     }
 };
-// In your controller file
-const getMe = async(req, res) => {
-    const token = req.cookies.token;
 
-    if (!token) {
-        return res.status(401).json({ success: false, message: "No token found" });
-    }
+// const adminMiddleware = async(req, res, next) => {
+//     const authHeader = req.cookies.token;
+//     console.log("Authorization Header:", authHeader);
 
-    try {
-        const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
-        const user = await User.findById(decoded.id);
+//     if (!authHeader) {
+//         return res.status(401).json({
+//             success: false,
+//             message: "Unauthorized user!",
+//         });
+//     }
 
-        if (!user || user.token !== token) {
-            return res.status(401).json({ success: false, message: "Invalid session" });
-        }
+//     const token = authHeader.split(" ")[1];
+//     console.log("This is token", token);
+//     try {
+//         console.log("Start");
+//         const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
+//         console.log("This is decode", decoded);
+//         req.user = decoded;
+//         console.log("Done");
+//         next();
+//     } catch (error) {
+//         console.log(error.message);
+//         return res.status(401).json({
+//             success: false,
+//             message: "Unauthorized user!",
+//         });
+//     }
+// };
 
-        return res.status(200).json({
-            success: true,
-            user: {
-                email: user.email,
-                role: user.role,
-                userName: user.userName,
-                id: user._id,
-            },
-        });
-    } catch (err) {
-        return res.status(401).json({ success: false, message: "Unauthorized" });
-    }
-};
-
-module.exports = {
-    registerUser,
-    loginUser,
-    logoutUser,
-    authMiddleware,
-    adminMiddleware,
-    getMe
-};
+// const adminMiddleware = async(req, res, next) => {
+//     try {
+//         const authHeader = req.headers.authorization;
 
 //         if (!authHeader || !authHeader.startsWith("Bearer ")) {
 //             return res.status(401).json({ message: "No token provided" });
@@ -220,4 +196,3 @@ module.exports = {
 // }
 
 module.exports = { registerUser, loginUser, logoutUser, authMiddleware, adminMiddleware };
-

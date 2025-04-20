@@ -20,30 +20,35 @@ function UserCartWrapper({ cartItems, setOpenCartSheet }) {
       : 0;
 
   return (
-    <SheetContent className="sm:max-w-md">
-      <SheetHeader>
-        <SheetTitle>Your Cart</SheetTitle>
+    <SheetContent className="w-[85vw] sm:max-w-md p-4 sm:p-6">
+      <SheetHeader className="mb-4 sm:mb-6">
+        <SheetTitle className="text-lg sm:text-xl">Your Cart</SheetTitle>
       </SheetHeader>
-      <div className="mt-8 space-y-4">
-        {cartItems && cartItems.length > 0
-          ? cartItems.map((item) => <UserCartItemsContent cartItem={item} />)
-          : null}
+      <div className="max-h-[60vh] overflow-y-auto">
+        {cartItems && cartItems.length > 0 ? (
+          cartItems.map((item) => <UserCartItemsContent key={item._id || item.productId} cartItem={item} />)
+        ) : (
+          <div className="text-center py-8">
+            <p className="text-muted-foreground">Your cart is empty</p>
+          </div>
+        )}
       </div>
-      <div className="mt-8 space-y-4">
-        <div className="flex justify-between">
-          <span className="font-bold">Total</span>
-          <span className="font-bold">₹{totalCartAmount}</span>
+      <div className="mt-6 sm:mt-8 pt-4 border-t">
+        <div className="flex justify-between mb-6">
+          <span className="font-bold text-base sm:text-lg">Total</span>
+          <span className="font-bold text-base sm:text-lg">₹{totalCartAmount.toFixed(2)}</span>
         </div>
+        <Button
+          onClick={() => {
+            navigate("/shop/checkout");
+            setOpenCartSheet(false);
+          }}
+          className="w-full text-sm sm:text-base"
+          disabled={!cartItems || cartItems.length === 0}
+        >
+          Checkout
+        </Button>
       </div>
-      <Button
-        onClick={() => {
-          navigate("/shop/checkout");
-          setOpenCartSheet(false);
-        }}
-        className="w-full mt-6"
-      >
-        Checkout
-      </Button>
     </SheetContent>
   );
 }

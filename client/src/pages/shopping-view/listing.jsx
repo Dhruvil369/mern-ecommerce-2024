@@ -146,48 +146,80 @@ function ShoppingListing() {
   console.log(productList, "productListproductListproductList");
 
   return (
-    // <div className="grid grid-cols md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6">
-    //   <ProductFilter filters={filters} handleFilter={handleFilter} />
-    <div
-  className={`grid gap-6 p-4 md:p-6 ${
-    Object.keys(filters).length > 0 ? "md:grid-cols-[200px_1fr]" : "md:grid-cols-1"
-  }`}
->
-
-      <div className="bg-background w-full rounded-lg shadow-sm">
-        <div className="p-4 border-b flex items-center justify-between">
-          <h2 className="text-lg font-extrabold">All Products</h2>
-          <div className="flex items-center gap-3">
-            <span className="text-muted-foreground">
-              {productList?.length} Products
-            </span>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
+    <div className="grid gap-4 sm:gap-6 p-3 sm:p-4 md:p-6">
+      {Object.keys(filters).length > 0 && (
+        <div className="md:hidden mb-2">
+          <Button
+            variant="outline"
+            className="w-full flex justify-between items-center"
+            onClick={() => document.getElementById('mobile-filter-dialog').showModal()}
+          >
+            <span>Filters ({Object.values(filters).flat().length})</span>
+            <span>▼</span>
+          </Button>
+          <dialog id="mobile-filter-dialog" className="modal w-full max-w-lg p-4 rounded-lg">
+            <div className="modal-box w-full">
+              <div className="sticky top-0 bg-white pb-2 mb-2 flex justify-between items-center">
+                <h3 className="font-bold text-lg">Filters</h3>
                 <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex items-center gap-1"
+                  variant="ghost"
+                  className="text-sm"
+                  onClick={() => document.getElementById('mobile-filter-dialog').close()}
                 >
-                  <ArrowUpDownIcon className="h-4 w-4" />
-                  <span>Sort by</span>
+                  Close
                 </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-[200px]">
-                <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
-                  {sortOptions.map((sortItem) => (
-                    <DropdownMenuRadioItem
-                      value={sortItem.id}
-                      key={sortItem.id}
-                    >
-                      {sortItem.label}
-                    </DropdownMenuRadioItem>
-                  ))}
-                </DropdownMenuRadioGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+              </div>
+              <div className="max-h-[70vh] overflow-y-auto pb-4">
+                <ProductFilter filters={filters} handleFilter={handleFilter} />
+              </div>
+            </div>
+          </dialog>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      )}
+
+      <div className={`grid gap-6 ${Object.keys(filters).length > 0 ? "md:grid-cols-[220px_1fr]" : "md:grid-cols-1"}`}>
+
+        {Object.keys(filters).length > 0 && (
+          <div className="hidden md:block">
+            <ProductFilter filters={filters} handleFilter={handleFilter} />
+          </div>
+        )}
+
+        <div className="bg-background w-full rounded-lg shadow-sm">
+          <div className="p-3 sm:p-4 border-b flex flex-wrap items-center justify-between gap-2">
+            <h2 className="text-base sm:text-lg font-extrabold">All Products</h2>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <span className="text-xs sm:text-sm text-muted-foreground">
+                {productList?.length} Products
+              </span>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="flex items-center gap-1 text-xs sm:text-sm h-8 sm:h-9 px-2 sm:px-3"
+                  >
+                    <ArrowUpDownIcon className="h-3 w-3 sm:h-4 sm:w-4" />
+                    <span>Sort by</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-[200px]">
+                  <DropdownMenuRadioGroup value={sort} onValueChange={handleSort}>
+                    {sortOptions.map((sortItem) => (
+                      <DropdownMenuRadioItem
+                        value={sortItem.id}
+                        key={sortItem.id}
+                        className="text-xs sm:text-sm"
+                      >
+                        {sortItem.label}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 p-3 sm:p-4">
           {productList && productList.length > 0
             ? productList.map((productItem) => (
                 <ShoppingProductTile
@@ -197,6 +229,7 @@ function ShoppingListing() {
                 />
               ))
             : null}
+          </div>
         </div>
       </div>
       <ProductDetailsDialog
