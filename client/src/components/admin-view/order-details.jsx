@@ -104,12 +104,17 @@ function AdminOrderDetailsView({ orderDetails }) {
           <div className="grid gap-1 sm:gap-2">
             <div className="font-medium text-xs sm:text-sm">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground text-xs sm:text-sm">
-              <span>{user.userName}</span>
+              <span className="font-semibold text-primary">Customer: {orderDetails?.userName || "Anonymous User"}</span>
               <span className="break-words">{orderDetails?.addressInfo?.address}</span>
               <span>{orderDetails?.addressInfo?.city}</span>
               <span>{orderDetails?.addressInfo?.pincode}</span>
               <span>{orderDetails?.addressInfo?.phone}</span>
-              <span className="break-words">{orderDetails?.addressInfo?.notes}</span>
+              {orderDetails?.addressInfo?.notes && (
+                <div className="mt-1 p-2 bg-blue-50 rounded-md">
+                  <span className="font-medium text-blue-800">Notes:</span>
+                  <span className="break-words block mt-1">{orderDetails?.addressInfo?.notes}</span>
+                </div>
+              )}
             </div>
           </div>
         </div>

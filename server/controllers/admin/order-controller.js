@@ -2,7 +2,8 @@ const Order = require("../../models/Order");
 
 const getAllOrdersOfAllUsers = async(req, res) => {
     try {
-        const orders = await Order.find({});
+        // Populate the user field to get user information
+        const orders = await Order.find({}).populate('user');
 
         if (!orders.length) {
             return res.status(404).json({
@@ -11,15 +12,35 @@ const getAllOrdersOfAllUsers = async(req, res) => {
             });
         }
 
+        // Process orders to ensure userName is available for all orders
+        const processedOrders = orders.map(order => {
+            const orderObj = order.toObject();
+
+            // If user field is populated, use it for userName
+            if (orderObj.user && orderObj.user.userName) {
+                orderObj.userName = orderObj.user.userName;
+            }
+            // If user field is not populated but userId exists, mark as legacy order
+            else if (orderObj.userId) {
+                orderObj.userName = "User #" + orderObj.userId.substring(0, 8);
+            }
+            // If neither exists, mark as anonymous
+            else {
+                orderObj.userName = "Anonymous User";
+            }
+
+            return orderObj;
+        });
+
         res.status(200).json({
             success: true,
-            data: orders,
+            data: processedOrders,
         });
     } catch (e) {
         console.log(e);
         res.status(500).json({
             success: false,
-            message: "Some error occured!",
+            message: "Some error occurred!",
         });
     }
 };
@@ -30,7 +51,8 @@ const getOrderDetailsForAdmin = async(req, res) => {
         console.log('Debug:', id);
         console.log("Decoded user from token:", req.params);
 
-        const order = await Order.findById(id);
+        // Populate the user field to get user information
+        const order = await Order.findById(id).populate('user');
 
         if (!order) {
             return res.status(404).json({
@@ -39,15 +61,31 @@ const getOrderDetailsForAdmin = async(req, res) => {
             });
         }
 
+        // Process order to ensure userName is available
+        const orderObj = order.toObject();
+
+        // If user field is populated, use it for userName
+        if (orderObj.user && orderObj.user.userName) {
+            orderObj.userName = orderObj.user.userName;
+        }
+        // If user field is not populated but userId exists, mark as legacy order
+        else if (orderObj.userId) {
+            orderObj.userName = "User #" + orderObj.userId.substring(0, 8);
+        }
+        // If neither exists, mark as anonymous
+        else {
+            orderObj.userName = "Anonymous User";
+        }
+
         res.status(200).json({
             success: true,
-            data: order,
+            data: orderObj,
         });
     } catch (e) {
         console.log(e);
         res.status(500).json({
             success: false,
-            message: "Some error occured!",
+            message: "Some error occurred!",
         });
     }
 };
@@ -83,11 +121,32 @@ const updateOrderStatus = async(req, res) => {
 
 const getUnassignedOrders = async(req, res) => {
     try {
-        const orders = await Order.find({ assignedTo: null });
-        // const orders = await Order.find({ status: "unassigned" });
+        // Populate the user field to get user information
+        const orders = await Order.find({ assignedTo: null }).populate('user');
+
+        // Process orders to ensure userName is available for all orders
+        const processedOrders = orders.map(order => {
+            const orderObj = order.toObject();
+
+            // If user field is populated, use it for userName
+            if (orderObj.user && orderObj.user.userName) {
+                orderObj.userName = orderObj.user.userName;
+            }
+            // If user field is not populated but userId exists, mark as legacy order
+            else if (orderObj.userId) {
+                orderObj.userName = "User #" + orderObj.userId.substring(0, 8);
+            }
+            // If neither exists, mark as anonymous
+            else {
+                orderObj.userName = "Anonymous User";
+            }
+
+            return orderObj;
+        });
+
         res.status(200).json({
             success: true,
-            data: orders,
+            data: processedOrders,
         });
     } catch (e) {
         console.log(e);
@@ -148,14 +207,33 @@ const getAcceptedOrdersByAdmin = async(req, res) => {
         console.log("req.user in getAcceptedOrdersByAdmin", req.user);
 
         const adminId = req.user.id;
-        // const orders = await Order.find({ assignedTo: adminId }).populate("user");
+        // Populate both user and assignedTo fields
         const orders = await Order.find({ assignedTo: adminId })
             .populate("user")
-            .populate("assignedTo"); // ← optional
+            .populate("assignedTo");
+
+        // Process orders to ensure userName is available for all orders
+        const processedOrders = orders.map(order => {
+            const orderObj = order.toObject();
+
+            // If user field is populated, use it for userName
+            if (orderObj.user && orderObj.user.userName) {
+                orderObj.userName = orderObj.user.userName;
+            }
+            // If user field is not populated but userId exists, mark as legacy order
+            else if (orderObj.userId) {
+                orderObj.userName = "User #" + orderObj.userId.substring(0, 8);
+            }
+            // If neither exists, mark as anonymous
+            else {
+                orderObj.userName = "Anonymous User";
+            }
+
+            return orderObj;
+        });
 
         console.log("This is admin id in getAcceptedOrdersByAdmin API", adminId);
-        console.log("This is orders id in getAcceptedOrdersByAdmin API", orders);
-        res.status(200).json({ success: true, data: orders });
+        res.status(200).json({ success: true, data: processedOrders });
     } catch (e) {
         console.log(e);
         res.status(500).json({ success: false, message: "Error fetching orders" });

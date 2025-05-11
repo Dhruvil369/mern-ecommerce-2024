@@ -96,8 +96,26 @@ const logoutUser = (req, res) => {
 
 //auth middleware
 const authMiddleware = async(req, res, next) => {
-    const token = req.cookies.token;
+    // Try to get token from cookies first
+    let token = req.cookies.token;
+
+    // If no token in cookies, try query parameters
+    if (!token && req.query.token) {
+        token = req.query.token;
+        console.log("Using token from query parameters");
+    }
+
+    // If still no token, try Authorization header
+    if (!token && req.headers.authorization) {
+        const authHeader = req.headers.authorization;
+        if (authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+            console.log("Using token from Authorization header");
+        }
+    }
+
     console.log("This is token in auth middleware", token);
+
     if (!token)
         return res.status(401).json({
             success: false,
@@ -111,6 +129,7 @@ const authMiddleware = async(req, res, next) => {
         console.log("Auth middleware running properly");
         next();
     } catch (error) {
+        console.error("Token verification error:", error.message);
         res.status(401).json({
             success: false,
             message: "Unauthorised user!",
@@ -119,21 +138,51 @@ const authMiddleware = async(req, res, next) => {
 };
 
 const adminMiddleware = async(req, res, next) => {
-    const token = req.cookies.token;
+    // Try to get token from cookies first
+    let token = req.cookies.token;
+
+    // If no token in cookies, try query parameters
+    if (!token && req.query.token) {
+        token = req.query.token;
+        console.log("Using token from query parameters in admin middleware");
+    }
+
+    // If still no token, try Authorization header
+    if (!token && req.headers.authorization) {
+        const authHeader = req.headers.authorization;
+        if (authHeader.startsWith('Bearer ')) {
+            token = authHeader.substring(7);
+            console.log("Using token from Authorization header in admin middleware");
+        }
+    }
+
     console.log("This is token in auth middleware of admin ", token);
+
     if (!token)
         return res.status(401).json({
             success: false,
             message: "Token not found in middleware!",
         });
+
     console.log("Admin Middleware Running till try");
+
     try {
         const decoded = jwt.verify(token, "CLIENT_SECRET_KEY");
         console.log(decoded);
         req.user = decoded;
-        console.log("Auth middleware running properly");
+
+        // Check if user is admin
+        if (decoded.role !== 'admin') {
+            return res.status(403).json({
+                success: false,
+                message: "Access denied. Admin privileges required.",
+            });
+        }
+
+        console.log("Admin middleware running properly");
         next();
     } catch (error) {
+        console.error("Admin token verification error:", error.message);
         res.status(401).json({
             success: false,
             message: "Unauthorised user!",

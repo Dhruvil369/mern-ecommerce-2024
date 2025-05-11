@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
 
 const OrderSchema = new mongoose.Schema({
-    // userId: String,
+    // Store both user reference and userId for backward compatibility
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    userId: String, // Keep this for backward compatibility with Flutter app
 
     cartId: String,
     cartItems: [{

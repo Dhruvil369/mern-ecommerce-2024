@@ -26,7 +26,7 @@ const createOrder = async(req, res) => {
 
         // Create a new order in the database first
         const newlyCreatedOrder = new Order({
-            userId,
+            user: userId, // Set the user field to reference the User model
             cartId,
             cartItems,
             addressInfo,
@@ -188,8 +188,17 @@ const capturePayment = async(req, res) => {
 const getAllOrdersByUser = async(req, res) => {
     try {
         const { userId } = req.params;
+        console.log("Fetching orders for user:", userId);
 
-        const orders = await Order.find({ userId });
+        // Find orders by either user reference or userId field (for backward compatibility)
+        const orders = await Order.find({
+            $or: [
+                { user: userId }, // New field (reference to User model)
+                { userId: userId } // Legacy field (string)
+            ]
+        }).sort({ orderDate: -1 }); // Sort by orderDate in descending order (newest first)
+
+        console.log(`Found ${orders.length} orders for user ${userId}`);
 
         if (!orders.length) {
             return res.status(404).json({
@@ -215,19 +224,40 @@ const getAllOrdersByUser = async(req, res) => {
 const getOrderDetails = async(req, res) => {
     try {
         const { id } = req.params;
+        console.log("Fetching order details for ID:", id);
 
-        const order = await Order.findById(id);
+        // Find the order and populate the user field
+        const order = await Order.findById(id).populate('user');
 
         if (!order) {
+            console.log("Order not found with ID:", id);
             return res.status(404).json({
                 success: false,
                 message: "Order not found",
             });
         }
 
+        // Process order to ensure userName is available
+        const orderObj = order.toObject();
+
+        // If user field is populated, use it for userName
+        if (orderObj.user && orderObj.user.userName) {
+            orderObj.userName = orderObj.user.userName;
+        }
+        // If user field is not populated but userId exists, mark as legacy order
+        else if (orderObj.userId) {
+            orderObj.userName = "User #" + orderObj.userId.substring(0, 8);
+        }
+        // If neither exists, mark as anonymous
+        else {
+            orderObj.userName = "Anonymous User";
+        }
+
+        console.log("Order details found for ID:", id);
+
         res.status(200).json({
             success: true,
-            data: order,
+            data: orderObj,
         });
     } catch (error) {
         console.log("Get Order Details Error:", error);

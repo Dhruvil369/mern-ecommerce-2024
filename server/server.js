@@ -24,8 +24,9 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", // update with frontend domain in production
+        origin: true, // Allow all origins during development
         methods: ["GET", "POST"],
+        credentials: true,
     },
 });
 
@@ -38,7 +39,16 @@ io.on("connection", (socket) => {
             console.log("❌ Order data is null or undefined");
         } else {
             console.log("📦 New order received via socket:", data);
-            io.emit("admin_new_order", data); // Broadcast to all connected clients
+
+            // Ensure the data has the expected format for the admin panel
+            const orderData = {
+                ...data,
+                _id: data._id || data.orderId, // Ensure _id is set for admin panel
+                orderDate: data.orderDate || new Date().toISOString(), // Ensure orderDate is set
+            };
+
+            console.log("📦 Broadcasting order to admin panel:", orderData);
+            io.emit("admin_new_order", orderData); // Broadcast to all connected clients
         }
     });
 
@@ -76,7 +86,7 @@ mongoose
 // ✅ Middleware Setup
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: true, // Allow all origins during development
         methods: ["GET", "POST", "DELETE", "PUT"],
         credentials: true,
     })
@@ -217,6 +227,24 @@ app.get("/api/admin/prescriptions/assigned/:adminId", async(req, res) => {
         res.status(500).json({
             success: false,
             message: "Error fetching assigned prescriptions"
+        });
+    }
+});
+
+// Get prescriptions for a specific user
+app.get("/api/shop/prescription/user/:userId", async(req, res) => {
+    try {
+        const { userId } = req.params;
+        const prescriptions = await Prescription.find({ userId }).sort({ uploadedAt: -1 });
+        res.json({
+            success: true,
+            data: prescriptions
+        });
+    } catch (error) {
+        console.error("Error fetching user prescriptions:", error);
+        res.status(500).json({
+            success: false,
+            message: "Error fetching user prescriptions"
         });
     }
 });
