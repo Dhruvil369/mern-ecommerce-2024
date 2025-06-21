@@ -9,126 +9,114 @@ search based on medicine and can also by medical store
 
 integrate porter api at launch time
 DISCUSS WITH THEM 
-# ✅ Project Requirements Summary
 
----
 
-### 1. 💳 Payment Gateway Integration
-- Replace **PayPal** with **Razorpay** as the primary payment gateway.
-- Ensure Razorpay supports:
-  - Secure transactions.
-  - User-friendly payment UI.
-  - Order confirmation and failure handling.
-  - Webhooks for real-time payment status updates.
+✅ Project Requirements Summary
 
----
+1️⃣ Payment Gateway Integration
+🔁 Replace PayPal with Razorpay as the primary payment gateway.
+✔️ Ensure Razorpay supports:
 
-### 2. 🖼️ Image Upload and Real-Time Display
-- Implement **image upload** functionality (e.g., prescriptions).
-- Store uploaded images securely (e.g., local server or cloud like Cloudinary).
-- Enable **real-time retrieval and display** of uploaded images using **Socket.IO** or polling (admin view, order confirmation, etc.).
+Secure transactions
 
----
+User-friendly payment UI
 
-### 3. 📍 Location-Based Order Distribution
-- Use **latitude and longitude (geo-coordinates)** to:
-  - Assign orders to the **nearest** medical store or delivery partner.
-  - Ensure accurate delivery zone coverage.
-  - Support distance-based filtering and sorting.
+Order confirmation and failure handling
 
----
+Webhooks for real-time payment status updates
 
-### 4. 🧾 User Registration and Role Management
-- Register users using **mobile number authentication**.
-- Add a `role` field in the user schema to differentiate:
-  - **Admin**: Can manage orders, products, stores, and images.
-  - **User**: Can browse and place orders.
-- Enforce role-based UI and API access.
+2️⃣ Image Upload and Real-Time Display
+🖼️ Implement image upload functionality (e.g., for prescriptions)
+💾 Store uploaded images in a secure server or cloud storage
+🔄 Enable real-time retrieval and display using WebSocket (Socket.IO) or polling
 
----
+3️⃣ Location-Based Order Distribution
+📍 Use latitude and longitude (geo-coordinates) to:
 
-### 5. 🔔 In-App Notifications
-- Integrate a notification service/API to send:
-  - Order updates (placed, accepted, out for delivery, delivered).
-  - Prescription approval or rejection.
-  - Payment confirmations.
-- Support:
-  - **Push notifications** (mobile app).
-  - **In-app toast notifications** (web & mobile).
+Assign orders to nearby medical stores or delivery partners
 
----
+Enable accurate delivery coverage
 
-### 6. 📂 Data Handling via Elasticsearch
-- Use **Elasticsearch** to:
-  - Enable fast and full-text search across medicines and stores.
-  - Store structured logs of:
-    - User orders
-    - Chat history (if needed)
-    - Medicine catalog
-  - Support filtering, keyword search, and sorting for UI/UX.
+Implement distance-based sorting of medical stores
 
----
+4️⃣ User Registration and Role Management
+📱 Register users using mobile number authentication
+🧑‍💼 Add user roles:
 
-### 7. ✂️ Order Splitting
-- Implement order split logic when:
-  - A single store cannot fulfill the complete order.
-  - Items must be fetched from multiple vendors.
-- Show **split order tracking** in:
-  - User view (multiple tracking entries).
-  - Admin dashboard (per-vendor order fulfillment).
+Admin (for managing orders, stores, etc.)
 
----
+User (for placing orders)
+📦 Add a role field in the user schema and enforce access control accordingly
 
-### 8. 🔍 Search Functionality
-- Allow users to:
-  - Search medicines by **name**, **category**, or **salt**.
-  - Filter search by **store availability**, **location proximity**, or **ratings**.
-- Use **Elasticsearch** as the backend for all search-related operations.
+5️⃣ In-App Notifications
+🔔 Integrate a notification API service to send:
 
----
+Order updates (placed, accepted, out for delivery, delivered)
 
-### 9. 🚚 Porter API Integration
-- Integrate **Porter API** at launch for real-time delivery logistics.
-- Features:
-  - Auto-assign delivery partners to accepted orders.
-  - Live order tracking on user UI.
-  - Estimated time of arrival (ETA).
-  - Display delivery agent details (name, number, etc.).
+Prescription approval or rejection
 
----
+Payment confirmations
+📲 Support push notifications and in-app toast messages (on mobile too)
 
-### 10. 🤝 Discussion Points
-- Coordinate with **Porter team** and relevant 3rd-party providers for:
-  - API onboarding.
-  - Pricing & billing structure.
-  - SLA guarantees and delivery zones.
+6️⃣ Data Handling via Elasticsearch
+⚡ Use Elasticsearch for:
 
----
+Fast and efficient full-text search
 
-### 11. 📞 Pharmacist Call Functionality
-- Allow **pharmacists to initiate calls** to users (for:
-  - Prescription clarification
-  - Delivery coordination
-- Use:
-  - Phone call API (e.g., Twilio, CallHippo, or device native dialer support)
-  - Display call button in admin/pharmacy dashboard next to orders.
+Storing user orders, chat history (if applicable), medicine data
 
----
+Filtering and sorting of search results
 
-### 12. 📋 Order Confirmation in UI
-- After successful order placement:
-  - Show a **confirmation screen** with summary (products, prescription, price, delivery address).
-  - Show confirmation on both **web and mobile platforms**.
-  - Option to **download invoice** or **view in order history**.
+7️⃣ Order Splitting
+✂️ Implement order split logic when:
 
----
+Items are not available in a single store
 
-### 13. 🛰️ Real-Time Order Tracking (User Side)
-- Users can track order status in real-time from:
-  - Order placed → Accepted → Out for delivery → Delivered
-- Powered by:
-  - **Socket.IO events**
-  - Porter live tracking integration
-- Show progress bar or stepper component in order details view.
+Parts of the order need to be fulfilled by multiple vendors
+📦 Reflect split order tracking in both user and admin dashboards
 
----
+8️⃣ Search Functionality
+🔍 Enable users to:
+
+Search medicines by name, category, or salt composition
+
+Search/filter by medical store availability, location, or rating
+🔎 Use Elasticsearch backend for optimized search
+
+9️⃣ Porter API Integration
+🚚 Integrate Porter API at launch for:
+
+Real-time delivery assignment
+
+Live order tracking
+
+Delivery partner details visible to users
+
+🔟 Discussion Points
+🤝 Coordinate with Porter team and third-party providers for:
+
+API onboarding
+
+Pricing and billing integration
+
+1️⃣1️⃣ Pharmacist Call Functionality
+📞 Allow pharmacists to call users directly for:
+
+Delivery coordination
+
+Prescription confirmation
+📲 Use a phone call API or dialer trigger in the pharmacist/admin dashboard
+
+1️⃣2️⃣ Order Confirmation in User UI
+🧾 Show users a confirmation screen after placing the order:
+
+Product summary, price, prescription (if any), and delivery info
+✅ Confirmation should appear on both web and mobile
+🧾 Option to view/download invoice or see order history
+
+1️⃣3️⃣ Real-Time Order Tracking (User Side)
+📡 Enable real-time status updates:
+
+Placed → Accepted → Out for delivery → Delivered
+⚙️ Powered by Socket.IO and Porter live tracking
+📍 Show a progress stepper or tracking card in the order detail screen
