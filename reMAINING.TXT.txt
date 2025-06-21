@@ -1,16 +1,3 @@
-PAYMENT GATWAY ROZERPAY TO PAYPAL                    
-IMAGE UPLODE AND RECIVE REAL TIME                    
-LANGITUDE LONGITUDE BASED ORDER DISTRIBUTION.
-register as mobile number and as a admin or as a user add roal in schema 
-NOTIFICATION IN APPLICATION integrate api service
-DATA HANDLING USING ELASTIC SEARCH
-SPLIT ORDER
-search based on medicine and can also by medical store
-
-integrate porter api at launch time
-DISCUSS WITH THEM 
-
-
 ✅ Project Requirements Summary
 
 1️⃣ Payment Gateway Integration
@@ -120,3 +107,19 @@ Product summary, price, prescription (if any), and delivery info
 Placed → Accepted → Out for delivery → Delivered
 ⚙️ Powered by Socket.IO and Porter live tracking
 📍 Show a progress stepper or tracking card in the order detail screen
+
+
+
+Task:
+PAYMENT GATWAY ROZERPAY TO PAYPAL                    
+IMAGE UPLODE AND RECIVE REAL TIME                    
+LANGITUDE LONGITUDE BASED ORDER DISTRIBUTION.
+register as mobile number and as a admin or as a user add roal in schema 
+NOTIFICATION IN APPLICATION integrate api service
+DATA HANDLING USING ELASTIC SEARCH
+SPLIT ORDER
+search based on medicine and can also by medical store
+
+integrate porter api at launch time
+DISCUSS WITH THEM 
+
