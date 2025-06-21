@@ -200,7 +200,7 @@ This means:
 | Action                        | Frontend Page/Component     | API Called                          | Backend Logic/DB Change           | Real-Time | Next Navigation/Update             |
 |------------------------------|-----------------------------|-------------------------------------|----------------------------------|-----------|------------------------------------|
 | User logs in                 | `login.jsx`                 | POST `/api/auth/login`             | Auth controller                  | ❌         | Redirect to home/dashboard         |
-| User uploads prescription    | `checkout.jsx`              | POST `/upload`                     | Saves file, returns URL          | ❌         | File URL used in order             |
+| User uploads prescription    | `checkout.jsx`              | POST `/upload`                     | Saves file, returns URL          | ✅         | File URL used in order             |
 | User places order            | `checkout.jsx`              | POST `/api/shop/order/add`         | Saves order                      | ✅         | Show confirmation, admin notified  |
 | Admin sees new order         | `dashboard.jsx`             | GET `/api/admin/orders`            | Reads from DB                    | ✅         | Order list updates instantly       |
 | Admin accepts/rejects order  | `dashboard.jsx`             | POST `/api/admin/orders/update`    | Updates order status             | ✅         | User sees status update            |
