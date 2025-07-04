@@ -27,7 +27,7 @@ const io = new Server(server, {
         origin: [
             "http://localhost:5173", // Vite default
             "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
-            "https://YOUR_FRONTEND_DOMAIN" // Replace with your deployed frontend domain
+            "https://mern-ecommerce-2024-three.vercel.app" // Your deployed frontend
         ],
         methods: ["GET", "POST"],
         credentials: true,
@@ -93,7 +93,7 @@ app.use(
         origin: [
             "http://localhost:5173", // Vite default
             "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
-            "https://YOUR_FRONTEND_DOMAIN" // Replace with your deployed frontend domain
+            "https://mern-ecommerce-2024-three.vercel.app" // Your deployed frontend
         ],
         methods: ["GET", "POST", "DELETE", "PUT"],
         credentials: true,
