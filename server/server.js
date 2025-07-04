@@ -24,7 +24,11 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
     cors: {
-        origin: true, // Allow all origins during development
+        origin: [
+            "http://localhost:5173", // Vite default
+            "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
+            "https://YOUR_FRONTEND_DOMAIN" // Replace with your deployed frontend domain
+        ],
         methods: ["GET", "POST"],
         credentials: true,
     },
@@ -86,7 +90,11 @@ mongoose
 // ✅ Middleware Setup
 app.use(
     cors({
-        origin: true, // Allow all origins during development
+        origin: [
+            "http://localhost:5173", // Vite default
+            "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
+            "https://YOUR_FRONTEND_DOMAIN" // Replace with your deployed frontend domain
+        ],
         methods: ["GET", "POST", "DELETE", "PUT"],
         credentials: true,
     })
