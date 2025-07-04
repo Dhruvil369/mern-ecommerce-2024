@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { apiUrl } from "../../../lib/api";
 
 const initialState = {
     isLoading: false,
@@ -18,7 +19,7 @@ export const fetchAllFilteredProducts = createAsyncThunk(
         });
 
         const result = await axios.get(
-            `http://localhost:5000/api/shop/products/get?${query}`
+            apiUrl(`/api/shop/products/get?${query}`)
         );
 
         console.log(result);
@@ -35,7 +36,7 @@ export const fetchProductDetails = createAsyncThunk(
     "/products/fetchProductDetails",
     async(id) => {
         const result = await axios.get(
-            `http://localhost:5000/api/shop/products/get/${id}`
+            apiUrl(`/api/shop/products/get/${id}`)
         );
         // AAIYA RESULT?.DATA; AAVE BUT UTO SAVE NO ISSUE SOLVE
         if (result.data) {
