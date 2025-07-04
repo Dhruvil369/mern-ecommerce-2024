@@ -20,6 +20,7 @@ import {
 import { Badge } from "../ui/badge";
 import { useToast } from "../ui/use-toast";
 import io from "socket.io-client";
+import { apiUrl } from "../../lib/api";
 
 function ShoppingOrders() {
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
@@ -62,7 +63,7 @@ function ShoppingOrders() {
     if (!user?.id) return;
 
     // Connect to socket server
-    const socket = io("http://localhost:5000");
+    const socket = io(import.meta.env.VITE_BASE_URL);
 
     // Listen for new orders
     socket.on("admin_new_order", (data) => {

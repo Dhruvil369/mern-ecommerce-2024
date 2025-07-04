@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Camera, Upload } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { io } from "socket.io-client";
+import { apiUrl } from "../../lib/api";
 import { useToast } from "@/components/ui/use-toast";
 import Address from "@/components/shopping-view/address";
 import { fetchAllAddresses } from "@/store/shop/address-slice";
 
 // Initialize socket
-const socket = io("http://localhost:5000");
+const socket = io(import.meta.env.VITE_BASE_URL);
 
 export default function UplodePrecription() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -72,7 +73,7 @@ export default function UplodePrecription() {
     formData.append("notes", currentSelectedAddress.notes || "");
 
     try {
-      const response = await fetch("http://localhost:5000/upload", {
+      const response = await fetch(apiUrl("/upload"), {
         method: "POST",
         body: formData,
       });

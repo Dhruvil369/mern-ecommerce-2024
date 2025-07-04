@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { apiUrl } from "../../lib/api";
 import axios from "axios";
 
 import {
@@ -22,7 +23,7 @@ import { Dialog, DialogContent } from "../ui/dialog";
 import { Button } from "../ui/button";
 
 // Initialize socket
-const socket = io("http://localhost:5000", {
+const socket = io(import.meta.env.VITE_BASE_URL, {
   auth: {
     token: localStorage.getItem("token"),
   },
@@ -85,7 +86,7 @@ function AdminPrescriptionsView() {
   const fetchUnassignedPrescriptions = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.get("http://localhost:5000/api/admin/prescriptions/unassigned");
+      const response = await axios.get(apiUrl("/api/admin/prescriptions/unassigned"));
       if (response.data.success) {
         setUnassignedPrescriptions(response.data.data);
       }
@@ -102,7 +103,7 @@ function AdminPrescriptionsView() {
 
     try {
       setIsLoading(true);
-      const response = await axios.get(`http://localhost:5000/api/admin/prescriptions/assigned/${user.id}`);
+      const response = await axios.get(apiUrl(`/api/admin/prescriptions/assigned/${user.id}`));
       if (response.data.success) {
         setAcceptedPrescriptions(response.data.data);
       }
@@ -121,7 +122,7 @@ function AdminPrescriptionsView() {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/prescriptions/accept/${id}`, {
+      const response = await axios.put(apiUrl(`/api/admin/prescriptions/accept/${id}`), {
         adminId: user.id
       });
 
@@ -146,7 +147,7 @@ function AdminPrescriptionsView() {
     }
 
     try {
-      const response = await axios.put(`http://localhost:5000/api/admin/prescriptions/complete/${id}`, {
+      const response = await axios.put(apiUrl(`/api/admin/prescriptions/complete/${id}`), {
         adminId: user.id
       });
 
@@ -343,7 +344,7 @@ function AdminPrescriptionsView() {
                 </div>
                 <div className="w-full max-w-lg">
                   <img
-                    src={`http://localhost:5000${selectedPrescription.imageUrl}`}
+                    src={`${import.meta.env.VITE_BASE_URL}${selectedPrescription.imageUrl}`}
                     alt="Prescription"
                     className="w-full rounded-lg shadow-lg"
                   />

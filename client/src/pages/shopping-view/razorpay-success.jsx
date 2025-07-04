@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
 import { io } from "socket.io-client";
+import { apiUrl } from "../../lib/api";
 import axios from "axios";
 
 function RazorpaySuccessPage() {
@@ -107,7 +108,7 @@ function RazorpaySuccessPage() {
 
           // Emit socket event for order status update
           try {
-            const socket = io("http://localhost:5000");
+            const socket = io(import.meta.env.VITE_BASE_URL);
             socket.emit("order_status_updated", {
               orderId: parsedOrderId,
               status: "confirmed"
@@ -137,7 +138,7 @@ function RazorpaySuccessPage() {
               // If we don't have the amount, fetch the order details
               try {
                 const orderResponse = await axios.get(
-                  `http://localhost:5000/api/shop/order/details/${parsedOrderId}`
+                  apiUrl(`/api/shop/order/details/${parsedOrderId}`)
                 );
                 if (orderResponse.data?.success && orderResponse.data?.data?.totalAmount) {
                   setPaymentDetails(prev => ({

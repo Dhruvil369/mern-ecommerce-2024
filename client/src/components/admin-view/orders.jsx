@@ -2,6 +2,7 @@ import { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { io } from "socket.io-client";
+import { apiUrl } from "../../lib/api";
 import {
   getUnassignedOrders,
   getOrderDetailsForAdmin,
@@ -29,7 +30,7 @@ import { Button } from "../ui/button";
 import AdminOrderDetailsView from "./order-details";
 
 // Initialize socket
-const socket = io("http://localhost:5000", {
+const socket = io(import.meta.env.VITE_BASE_URL, {
   auth: {
     token: localStorage.getItem("token"), // or however you're storing it
   },
