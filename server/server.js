@@ -25,7 +25,7 @@ const server = http.createServer(app);
 const io = new Server(server, {
     cors: {
         origin: [
-            "http://localhost:5173", // Vite default
+             // Vite default
             "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
             "https://mern-ecommerce-2024-three.vercel.app" // Your deployed frontend
         ],
@@ -91,7 +91,7 @@ mongoose
 app.use(
     cors({
         origin: [
-            "http://localhost:5173", // Vite default
+            // Vite default
             "https://mern-ecommerce-2024-oqog.onrender.com", // Backend itself (for SSR or API calls)
             "https://mern-ecommerce-2024-three.vercel.app" // Your deployed frontend
         ],
