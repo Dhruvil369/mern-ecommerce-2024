@@ -106,7 +106,7 @@ export const getOrderDetails = createAsyncThunk(
     "/order/getOrderDetails",
     async(id) => {
         const response = await axios.get(
-            `http://localhost:5000/api/shop/order/details/${id}`
+            apiUrl(`/api/shop/order/details/${id}`)
         );
 
         return response.data;
