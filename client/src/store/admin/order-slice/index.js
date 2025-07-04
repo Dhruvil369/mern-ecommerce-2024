@@ -64,7 +64,7 @@ export const acceptOrder = createAsyncThunk(
 // export const getAcceptedOrdersByAdmin = createAsyncThunk(
 //     "/order/getAcceptedOrdersByAdmin",
 //     async() => {
-//         const res = await axios.get(`http://localhost:5000/api/admin/orders/accepted`);
+//         const res = await axios.get(apiUrl(`/api/admin/orders/accepted`));
 //         return res.data;
 //     }
 // );
